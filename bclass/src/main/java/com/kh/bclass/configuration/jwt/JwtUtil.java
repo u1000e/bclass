@@ -20,6 +20,11 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secretKey;
     private SecretKey key;
+    
+    // 액세스 토큰 유효 기간 (예: 3일)
+    private static final long ACCESS_TOKEN_VALIDITY = 3600000L * 72;
+    // 리프레시 토큰 유효 기간 (예: 7일)
+    private static final long REFRESH_TOKEN_VALIDITY = 604800000L;
 
     @PostConstruct
     public void init() {
@@ -32,12 +37,17 @@ public class JwtUtil {
         return this.key;
     }
     
+    private Date buildExpirationDate(long validityMillis) {
+        long now = System.currentTimeMillis();
+        return new Date(now + validityMillis);
+    }
+    
 	public String generateAccessToken(String userName){
         // 인증 정보에서 사용자 이름 추출
         return Jwts.builder()
                 .subject(userName)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date()).getTime() + 3600000)) // 3일 유효
+                .expiration(buildExpirationDate(ACCESS_TOKEN_VALIDITY)) 
                 //.expiration(new Date((new Date()).getTime() + 60000)) // 1분 유효
                 .signWith(key)
                 .compact();
@@ -47,7 +57,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(userName)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date()).getTime() + 604800000)) // 7일 유효
+                .expiration(buildExpirationDate(REFRESH_TOKEN_VALIDITY)) 
                 //.expiration(new Date((new Date()).getTime() + 240000)) // 4분 유효
                 .signWith(key)
                 .compact();
@@ -60,7 +70,5 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-    
-
 
 }

@@ -14,5 +14,10 @@
 		SELECT ID id, TOKEN token, Expiration expiration, USER_NO userNo FROM refresh_token WHERE token = #{token}
 	</select>
 	
+	<delete id="deleteExpiredTokens" parameterType="map">
+	    DELETE FROM refresh_token
+	    WHERE user_no = #{userNo} AND expiration <![CDATA[ < ]]> #{currentTimeMillis}
+	</delete>
+	
     
 </mapper>
