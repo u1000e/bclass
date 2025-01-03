@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.bclass.board.model.dao.BoardMapper">
+
+	<insert id="save">
+		INSERT
+		  INTO
+		       TB_BOARD
+		VALUES
+		       (
+				SEQ_BNO.NEXTVAL
+			 ,  #{boardTitle}
+			 ,	#{boardContent}
+			 ,	#{boardWriter}
+			   )
+	</insert>
+	
+	<sql id="boardResult">
+		SELECT
+		       BOARD_NO boardNo
+		     , BOARD_TITLE boardTitle
+		     , USER_NAME boardWriter
+		  FROM
+		       TB_BOARD
+		  JOIN
+		       TB_MEMBER ON (BOARD_WRITER = USER_NO)
+	</sql>
+	
+	<select id="findAll" resultType="com.kh.bclass.board.model.vo.Board">
+		<include refid="boardResult" />
+		ORDER
+		   BY
+		      BOARD_NO DESC
+	</select>
+	
+	<select id="findById" parameterType="long" resultType="com.kh.bclass.board.model.vo.Board">
+		<include refid="boardResult" />
+		    , BOARD_CONTENT boardContent
+		WHERE
+		      BOARD_NO = #{boardNo}
+	</select>
+    
+</mapper>
