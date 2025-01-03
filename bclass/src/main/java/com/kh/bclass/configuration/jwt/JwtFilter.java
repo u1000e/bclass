@@ -9,6 +9,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.kh.bclass.exception.AccessTokenExpiredException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -70,14 +72,12 @@ public class JwtFilter extends OncePerRequestFilter {
             log.info("사용자 인증 성공: " + username);
             
         } catch (ExpiredJwtException e) {
-            log.error("Token 이 만료되었습니다.", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token is expired");
-            return;
+            log.error("AccessToken 이 만료되었습니다.", e);
+            throw new AccessTokenExpiredException("AccessToken 이 만료되었습니다.");
         } catch (JwtException e) {
             log.error("Token 검증 실패", e);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token validation failed");
+            response.getWriter().write("토큰이 유효성 검증에 실패했습니다.");
             return;
         }
 
