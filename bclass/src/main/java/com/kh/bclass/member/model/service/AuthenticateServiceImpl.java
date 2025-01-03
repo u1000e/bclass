@@ -38,7 +38,7 @@ public class AuthenticateServiceImpl implements AuthenticateService{
             return tokenService.generateTokens(userName, member.getUserNo());
             
         } catch (AuthenticationException e) {
-            log.error("권한부여 실패한 아이디 : {}", userName);
+            log.error("인증에 실패한 아이디 : {}", userName);
             throw new CustomAuthenticationException("비밀번호가 일치하지 않습니다.");
         }
     }
