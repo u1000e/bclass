@@ -2,6 +2,7 @@ package com.kh.bclass.board.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ public class BoardController {
 	@PostMapping
 	public ResponseEntity<String> save(@RequestBody @Valid Board board){
 		service.save(board);
-		return ResponseEntity.ok("게시글등록성공");
+		return new ResponseEntity("게시글등록성공", HttpStatus.CREATED);
 	}
 	
 	@GetMapping
