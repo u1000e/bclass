@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class Board {
 	
-    @NotNull(message = "게시글 번호는 필수값입니다.")
-    @Min(value = 1, message = "게시글 번호는 최소 1 이상이어야 합니다.")
 	private Long boardNo;
     
     @NotBlank(message = "게시글 제목은 비어 있을 수 없습니다.")

@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MemberServiceImpl {
+public class MemberServiceImpl implements MemberService {
 	
     private final MemberMapper mapper;
     private final PasswordEncoder passwordEncoder;
@@ -39,5 +39,6 @@ public class MemberServiceImpl {
 	public Member getUserByUsername(String userName) {
 		return mapper.getUserName(userName);
 	}
+	
 
 }

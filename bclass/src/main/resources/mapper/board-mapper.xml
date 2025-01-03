@@ -17,27 +17,32 @@
 			   )
 	</insert>
 	
-	<sql id="boardResult">
+	<sql id="boardColumn">
 		SELECT
 		       BOARD_NO boardNo
 		     , BOARD_TITLE boardTitle
 		     , USER_NAME boardWriter
-		  FROM
-		       TB_BOARD
-		  JOIN
-		       TB_MEMBER ON (BOARD_WRITER = USER_NO)
+
 	</sql>
 	
 	<select id="findAll" resultType="com.kh.bclass.board.model.vo.Board">
-		<include refid="boardResult" />
+		<include refid="boardColumn" />
+	     FROM
+	          TB_BOARD
+	     JOIN
+	          TB_MEMBER ON (BOARD_WRITER = USER_NO)
 		ORDER
 		   BY
 		      BOARD_NO DESC
 	</select>
 	
 	<select id="findById" parameterType="long" resultType="com.kh.bclass.board.model.vo.Board">
-		<include refid="boardResult" />
+		<include refid="boardColumn" />
 		    , BOARD_CONTENT boardContent
+	     FROM
+	          TB_BOARD
+	     JOIN
+	          TB_MEMBER ON (BOARD_WRITER = USER_NO)
 		WHERE
 		      BOARD_NO = #{boardNo}
 	</select>

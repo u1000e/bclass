@@ -3,14 +3,14 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.kh.bclass.member.model.dao.RefreshTokenMapper">
+<mapper namespace="com.kh.bclass.token.model.dao.RefreshTokenMapper">
 
 	<insert id="save">
 		INSERT INTO refresh_token VALUES (SEQ_TNO.NEXTVAL, #{token}, #{expiration}, #{userNo})
 	</insert>
 	
 	
-	<select id="findByToken" resultType="com.kh.bclass.member.model.vo.RefreshToken" parameterType="string">
+	<select id="findByToken" resultType="com.kh.bclass.token.model.vo.RefreshToken" parameterType="string">
 		SELECT ID id, TOKEN token, Expiration expiration, USER_NO userNo FROM refresh_token WHERE token = #{token}
 	</select>
 	
