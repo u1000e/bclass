@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.kh.bclass.exception.AccessTokenExpiredException;
+import com.kh.bclass.exception.TokenSubjectMismatchException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -60,6 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             // 사용자 정보 로드
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+ 
 
             // 권한 설정
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

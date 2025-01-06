@@ -42,6 +42,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 	*/
+    @ExceptionHandler(TokenSubjectMismatchException.class)
+    public ResponseEntity<?> handleTokenMismatchxception(TokenSubjectMismatchException ex, WebRequest request){
+    	ErrorDetail errorDetails = new ErrorDetail(new Date(), ex.getMessage(), request.getDescription(false));
+    	return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
     @ExceptionHandler(AccessTokenExpiredException.class)
     public ResponseEntity<?> handleAccessTokenExpiredException(AccessTokenExpiredException ex, WebRequest request){
     	ErrorDetail errorDetails = new ErrorDetail(new Date(), ex.getMessage(), request.getDescription(false));
