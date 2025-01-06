@@ -32,12 +32,12 @@ public class UserService implements UserDetailsService {
 			throw new CustomAuthenticationException("존재하지 않는 사용자입니다.");
 		}
 		
-		return new CustomUserDetails(
-                user.getUserName(),
-                user.getUserPwd(),
-                user.getUserNo(),
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
-        );
+		return CustomUserDetails.builder()
+								.username(user.getUserName())
+								.password(user.getUserPwd())
+								.userNo(user.getUserNo())
+								.authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
+								.build();
 		
 	}
 
