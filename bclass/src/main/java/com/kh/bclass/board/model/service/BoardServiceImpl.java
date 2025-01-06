@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.bclass.board.model.dao.BoardMapper;
 import com.kh.bclass.board.model.vo.Board;
-import com.kh.bclass.member.model.service.MemberService;
-import com.kh.bclass.member.model.vo.Member;
+import com.kh.bclass.member.model.vo.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,18 +19,15 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService {
 	
 	private final BoardMapper mapper;
-	private final MemberService service;
 
 	@Override
 	public void save(Board board) {
 		log.info("{}", board);
 		
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        log.info(username);
-        Member member = service.getUserByUsername(username);
-        
-        board.setBoardWriter(String.valueOf(member.getUserNo()));
+        CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
+
+        board.setBoardWriter(String.valueOf(user.getUserNo()));
         
 		mapper.save(board);
 	}
