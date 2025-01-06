@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.bclass.exception.CustomAuthenticationException;
 import com.kh.bclass.member.model.dao.MemberMapper;
+import com.kh.bclass.member.model.vo.CustomUserDetails;
 import com.kh.bclass.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -31,13 +32,12 @@ public class UserService implements UserDetailsService {
 			throw new CustomAuthenticationException("존재하지 않는 사용자입니다.");
 		}
 		
-		org.springframework.security.core.userdetails.User findUser = new org.springframework.security.core.userdetails.User(
+		return new CustomUserDetails(
                 user.getUserName(),
                 user.getUserPwd(),
+                user.getUserNo(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
         );
-		
-		return findUser;
 		
 	}
 

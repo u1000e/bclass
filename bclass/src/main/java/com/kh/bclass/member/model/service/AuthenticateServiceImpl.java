@@ -4,10 +4,12 @@ import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import com.kh.bclass.exception.CustomAuthenticationException;
+import com.kh.bclass.member.model.vo.CustomUserDetails;
 import com.kh.bclass.member.model.vo.Member;
 import com.kh.bclass.token.model.service.TokenService;
 
@@ -26,16 +28,15 @@ public class AuthenticateServiceImpl implements AuthenticateService{
     public Map<String, String> login(String userName, String password) {
         try {
             // 사용자 인증
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
+            Authentication authentication = authenticationManager.authenticate(
+            		new UsernamePasswordAuthenticationToken(userName, password)
+            );
            
             // 사용자 정보 조회
-            Member member = memberService.getUserByUsername(userName);
-            if (member == null) {
-                throw new CustomAuthenticationException("존재하지 않는 사용자입니다.");
-            }
+            CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
 
             // JWT 토큰 생성 및 저장
-            return tokenService.generateTokens(userName, member.getUserNo());
+            return tokenService.generateTokens(userName, user.getUserNo());
             
         } catch (AuthenticationException e) {
             log.error("인증에 실패한 아이디 : {}", userName);
