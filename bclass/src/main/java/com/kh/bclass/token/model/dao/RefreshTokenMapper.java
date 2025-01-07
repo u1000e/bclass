@@ -19,4 +19,6 @@ public interface RefreshTokenMapper {
     void deleteByUserNo(Long userNo);
 
 	void deleteExpiredTokens(Map<String, Long> map);
+	
+	void deleteByToken(String token);
 }

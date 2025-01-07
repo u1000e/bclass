@@ -7,5 +7,8 @@ public interface TokenService {
 	Map<String, String> generateTokens(String userName, Long userNo);
 	
 	Map<String, String> refreshAccessToken(String refreshToken);
+	
+	void deleteRefreshToken(String refreshToken);
+
 
 }

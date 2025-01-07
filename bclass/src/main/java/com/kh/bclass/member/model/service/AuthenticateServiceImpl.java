@@ -6,11 +6,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.kh.bclass.exception.CustomAuthenticationException;
 import com.kh.bclass.member.model.vo.CustomUserDetails;
-import com.kh.bclass.member.model.vo.Member;
 import com.kh.bclass.token.model.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticateServiceImpl implements AuthenticateService{
 
     private final AuthenticationManager authenticationManager;
-    private final MemberService memberService;
     private final TokenService tokenService;
 
     public Map<String, String> login(String userName, String password) {
@@ -39,8 +38,8 @@ public class AuthenticateServiceImpl implements AuthenticateService{
             return tokenService.generateTokens(userName, user.getUserNo());
             
         } catch (AuthenticationException e) {
-            log.error("인증에 실패한 아이디 : {}", userName);
-            throw new CustomAuthenticationException("비밀번호가 일치하지 않습니다.");
+            log.error("인증에 실패한 아이디 : {}, 이유 : {}", userName, e.getMessage(), e);
+            throw new CustomAuthenticationException("사용자 이름 또는 비밀번호가 일치하지 않습니다.");
         }
     }
 

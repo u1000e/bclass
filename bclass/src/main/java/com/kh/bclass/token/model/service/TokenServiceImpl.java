@@ -76,5 +76,10 @@ public class TokenServiceImpl implements TokenService{
         refreshTokenMapper.deleteExpiredTokens(param);
         log.info("만료된 리프레시 토큰 삭제 완료");
     }
+    
+    public void deleteRefreshToken(String refreshToken) {
+        refreshTokenMapper.deleteByToken(refreshToken);
+        log.info("Refresh Token 삭제 완료: {}", refreshToken);
+    }
 
 }

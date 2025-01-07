@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.bclass.member.model.service.AuthenticateService;
 import com.kh.bclass.member.model.service.MemberService;
+import com.kh.bclass.member.model.vo.LoginResponse;
 import com.kh.bclass.member.model.vo.Member;
 import com.kh.bclass.token.model.service.TokenService;
 
@@ -29,13 +30,22 @@ public class MemberController {
     private final AuthenticateService authenticationService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<Map> login(@Valid @RequestBody Member member){
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody Member member){
+
 		Map<String, String> tokens = authenticationService.login(member.getUserName(), member.getUserPwd());
-		return ResponseEntity.ok(tokens);
+		
+		LoginResponse response = LoginResponse.builder()	
+											  .username(member.getUserName())
+											  .accessToken(tokens.get("accessToken"))
+											  .refreshToken(tokens.get("refreshToken"))
+											  .build();
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping("/join")
 	public ResponseEntity<?> join(@Valid @RequestBody Member member){
+		log.info("내가받음?");
 		memberService.join(member.getUserName(), member.getUserPwd());
 		return new ResponseEntity("회원가입에 성공했습니다.", HttpStatus.CREATED);
 	}
@@ -46,5 +56,14 @@ public class MemberController {
 		Map<String, String> tokens = tokenService.refreshAccessToken(refreshToken);
 		return ResponseEntity.ok(tokens);
 	}
+	
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody String refreshToken){
+        if (refreshToken != null && !refreshToken.isEmpty()) {
+            tokenService.deleteRefreshToken(refreshToken);
+            return ResponseEntity.ok("로그아웃이 완료되었습니다.");
+        }
+        return ResponseEntity.badRequest().body("유효하지 않은 토큰입니다.");
+    }
 	
 }

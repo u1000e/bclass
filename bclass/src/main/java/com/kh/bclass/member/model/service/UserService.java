@@ -24,12 +24,12 @@ public class UserService implements UserDetailsService {
 	private final MemberMapper mapper;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username){
 		
 		Member user = mapper.getUserName(username);
 		
 		if(user == null) {
-			throw new CustomAuthenticationException("존재하지 않는 사용자입니다.");
+			throw new UsernameNotFoundException("존재하지 않는 사용자입니다.");
 		}
 		
 		return CustomUserDetails.builder()

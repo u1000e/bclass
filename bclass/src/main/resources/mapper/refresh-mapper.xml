@@ -19,5 +19,10 @@
 	    WHERE user_no = #{userNo} AND expiration <![CDATA[ < ]]> #{currentTimeMillis}
 	</delete>
 	
+   <delete id="deleteByToken" parameterType="String">
+        DELETE FROM refresh_token
+        WHERE TOKEN = #{token}
+    </delete>
+	
     
 </mapper>
