@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.bclass.board.model.dao.BoardMapper;
 import com.kh.bclass.board.model.vo.Board;
 import com.kh.bclass.exception.CustomAuthenticationException;
 import com.kh.bclass.exception.TokenSubjectMismatchException;
 import com.kh.bclass.member.model.vo.CustomUserDetails;
+import com.kh.bclass.storage.model.service.StorageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService {
 	
 	private final BoardMapper mapper;
+	private final StorageService s3Service;
 	
     public CustomUserDetails getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,10 +48,17 @@ public class BoardServiceImpl implements BoardService {
     }
 
 	@Override
-	public void save(Board board) {
+	public void save(Board board, MultipartFile file) {
 		
         CustomUserDetails user = getAuthenticatedUser();
         validateBoardWriter(board.getBoardWriter(), user.getUsername());
+        
+        if (file != null && !file.isEmpty()) {
+            String fileUrl = s3Service.upload(file);
+            board.setFileUrl(fileUrl);
+        } else {
+        	board.setFileUrl(null);
+        }
         
         board.setBoardWriter(String.valueOf(user.getUserNo()));
         
@@ -67,6 +77,16 @@ public class BoardServiceImpl implements BoardService {
 			throw new RuntimeException("존재하지 않는 게시글");
 		}
 		return board;
+	}
+
+	@Override
+	public String upfile(MultipartFile file) {
+		return s3Service.upload(file);
+	}
+
+	@Override
+	public void deleteFile(String fileUri) {
+		s3Service.delete(fileUri);
 	}
 
 }

@@ -42,8 +42,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 	*/
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<?> handleFileStorageException(FileStorageException ex, WebRequest request){
+    	ErrorDetail errorDetails = new ErrorDetail(new Date(), ex.getMessage(), request.getDescription(false));
+    	return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+    
     @ExceptionHandler(TokenSubjectMismatchException.class)
-    public ResponseEntity<?> handleTokenMismatchxception(TokenSubjectMismatchException ex, WebRequest request){
+    public ResponseEntity<?> handleTokenMismatchException(TokenSubjectMismatchException ex, WebRequest request){
     	ErrorDetail errorDetails = new ErrorDetail(new Date(), ex.getMessage(), request.getDescription(false));
     	return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }

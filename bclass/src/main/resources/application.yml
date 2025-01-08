@@ -6,6 +6,8 @@ spring:
     username: C##BCLASS
     password: BCLASS
     driver-class-name: oracle.jdbc.OracleDriver
+  profiles:
+    include: private
 
 server:
   port: 80
@@ -13,7 +15,9 @@ server:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    jdbc-type-for-null: VARCHAR
   mapper-locations: classpath:mapper/*.xml
+  
   
 jwt:
   secret: H7oIaBujRo6fA/a0wdk09iY6STECQZbemMj8bcs5xBMzd0IYxzT+hNQd+fgXvsyz3qHF3DIwuYXUE9m7w5tkDw==
