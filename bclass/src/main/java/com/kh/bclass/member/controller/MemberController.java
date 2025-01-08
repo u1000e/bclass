@@ -4,18 +4,23 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.bclass.member.model.service.AuthenticateService;
 import com.kh.bclass.member.model.service.MemberService;
+import com.kh.bclass.member.model.vo.ChangePasswordRequest;
 import com.kh.bclass.member.model.vo.LoginResponse;
 import com.kh.bclass.member.model.vo.Member;
 import com.kh.bclass.token.model.service.TokenService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,5 +70,18 @@ public class MemberController {
         }
         return ResponseEntity.badRequest().body("유효하지 않은 토큰입니다.");
     }
+     
+    @PutMapping
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request){
+    	memberService.changePassword(request.getCurrentPassword(), request.getNewPassword());
+    	return ResponseEntity.status(HttpStatus.CREATED).body("비밀번호 변경에 성공했습니다~");
+    }
+    
+    @DeleteMapping
+    public ResponseEntity<?> deleteAccount(@RequestBody Map<String, String> password){
+    	memberService.deleteAccount(password.get("password"));
+    	return ResponseEntity.ok("계정이 삭제되었습니다.");
+    }
 	
+    
 }

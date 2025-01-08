@@ -13,4 +13,16 @@
     	INSERT INTO TB_MEMBER VALUES(SEQ_MNO.NEXTVAL, #{userName}, #{userPwd}, #{role})
     </insert>
     
+    <update id="changePassword" parameterType="map">
+    	UPDATE TB_MEMBER SET USER_PWD = #{password} WHERE USER_NAME = #{username}
+    </update>
+    
+    <delete id="deleteAccount" parameterType="com.kh.bclass.member.model.vo.CustomUserDetails">
+    	DELETE
+    	  FROM
+    	       TB_MEMBER
+    	 WHERE
+    	       USER_NAME = #{username}
+    </delete>
+    
 </mapper>

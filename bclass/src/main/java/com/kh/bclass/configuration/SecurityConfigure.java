@@ -40,16 +40,18 @@ public class SecurityConfigure {
                 .csrf(AbstractHttpConfigurer::disable)	   // csrf 필요없어
                 .cors(Customizer.withDefaults())	  // cors react서버로 받기
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/member/login", "/member/join", "/member/refresh", "/member/logout").permitAll(); // 얘는 권한없이도 오키
-                    requests.requestMatchers(HttpMethod.GET, "/boards/**").permitAll(); // board관련 GET은 다 받아주장
-                    requests.requestMatchers(HttpMethod.POST, "/api/**").authenticated(); // 요렇게 오는애들은 모두 토큰 필요
+                    requests.requestMatchers("/member/login", "/member/join", "/member/refresh", "/member/logout").permitAll();
+                    requests.requestMatchers(HttpMethod.PUT, "/member").authenticated();
+                    requests.requestMatchers(HttpMethod.DELETE, "/member").authenticated();
+                    requests.requestMatchers(HttpMethod.GET, "/boards/**").permitAll();
                     requests.requestMatchers(HttpMethod.POST, "/boards").hasRole("USER"); // ROLE_USER 권한 있는 애들만 boards(POST)요청가능
+                    // requests.requestMatchers(HttpMethod.POST, "/api/**").authenticated(); 
                 })
                 .exceptionHandling(exception ->
                 		exception.authenticationEntryPoint(customAuthenticationEntryPoint))
                 .sessionManagement(
                         sessionManagement ->
-                                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션은 안쓸거 ㅋ
+                                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class) // JWT필터를 UsernamePasswordAuthenticationFilter 앞에 붙임
                 .build();
