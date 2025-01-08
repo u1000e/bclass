@@ -2,6 +2,9 @@
 # Java
 # ====================
 
+# privateFile
+application-private.yml
+
 # Compiled class files
 *.class
 
