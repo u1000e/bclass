@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.bclass.board.model.vo.Board;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 public interface BoardService {
 	
@@ -20,7 +21,9 @@ public interface BoardService {
 
 	void deleteFile(String fileUri);
 
-	Board updateBoard(@Valid Board board, MultipartFile file);
+	Board updateBoard(Board board, MultipartFile file);
+
+	void deleteById (Long boardNo);
 	
 
 }

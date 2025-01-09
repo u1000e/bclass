@@ -16,7 +16,6 @@ import com.kh.bclass.exception.TokenSubjectMismatchException;
 import com.kh.bclass.member.model.vo.CustomUserDetails;
 import com.kh.bclass.storage.model.service.StorageService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -115,5 +114,22 @@ public class BoardServiceImpl implements BoardService {
         mapper.updateBoard(existingBoard);
         return existingBoard;
     }
+
+	@Override
+	public void deleteById(Long boardNo) {
+        Board existingBoard = mapper.findById(boardNo);
+        if (existingBoard == null) {
+            throw new ResourceNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+        CustomUserDetails user = getAuthenticatedUser();
+        if(!(user.getUsername().equals(existingBoard.getBoardWriter()))) {
+        	throw new CustomAuthenticationException("유효하지 않은 사용자 정보입니다.");
+        }
+        
+        mapper.deleteById(boardNo);
+        if(existingBoard.getFileUrl() != null) {
+        	deleteFile(existingBoard.getFileUrl());
+        }
+	}
 
 }

@@ -52,14 +52,23 @@ public class BoardController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@PathVariable(name="id") 
-										  @Min(value = 1, message = "게시글번호는 최소 1 이상이어야 합니다.") Long boardNo,
-										  @ModelAttribute @Valid Board board,
-										  @RequestParam(name="file", required = false) MultipartFile file){
+								    @Min(value = 1, message = "게시글번호는 최소 1 이상이어야 합니다.") Long boardNo,
+								    @ModelAttribute @Valid Board board,
+								    @RequestParam(name="file", required = false) MultipartFile file){
 		board.setBoardNo(boardNo);
 		
 		Board updated = service.updateBoard(board, file);
 		log.info("{}", board);
 		return ResponseEntity.ok(updated);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable(name="id") 
+	  								@Min(value = 1, message = "게시글번호는 최소 1 이상이어야 합니다.") Long boardNo){
+		
+		log.info("num : {}", boardNo);
+		service.deleteById(boardNo);
+		return ResponseEntity.ok("잘지움");
 	}
 	
 	@PostMapping("/file")

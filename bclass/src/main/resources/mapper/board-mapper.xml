@@ -59,5 +59,13 @@
 		 WHERE
 		       BOARD_NO = #{boardNo}    
 	</update>
+	
+	<delete id="deleteById">
+		DELETE
+		  FROM
+		       TB_BOARD
+		 WHERE
+		       BOARD_NO = #{boardNo}
+	</delete>
     
 </mapper>

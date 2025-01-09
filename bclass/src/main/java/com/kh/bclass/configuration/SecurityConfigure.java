@@ -44,6 +44,7 @@ public class SecurityConfigure {
                     requests.requestMatchers(HttpMethod.PUT, "/member").authenticated();
                     requests.requestMatchers(HttpMethod.PUT, "/boards/**").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/member").authenticated();
+                    requests.requestMatchers(HttpMethod.DELETE, "/boards/**").authenticated();
                     requests.requestMatchers(HttpMethod.GET, "/boards/**").permitAll();
                     requests.requestMatchers(HttpMethod.POST, "/boards").hasRole("USER"); // ROLE_USER 권한 있는 애들만 boards(POST)요청가능
                     // requests.requestMatchers(HttpMethod.POST, "/api/**").authenticated(); 

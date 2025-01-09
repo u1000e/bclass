@@ -18,4 +18,6 @@ public interface BoardMapper {
 
 	void updateBoard(Board existingBoard);
 
+	void deleteById(Long boardNo);
+
 }
