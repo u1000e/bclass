@@ -29,23 +29,32 @@ public class BoardServiceImpl implements BoardService {
 	
     public CustomUserDetails getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        
-        // Authentication이 null이 아니고 인증된 상태인지 확인
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new CustomAuthenticationException("인증된 사용자가 아닙니다.");
         }
-        
-        // Principal이 CustomUserDetails인지 확인
         if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
             throw new CustomAuthenticationException("유효하지 않은 사용자 정보입니다.");
         }
-        
         return (CustomUserDetails)authentication.getPrincipal();
     }
     
     private void validateBoardWriter(String boardWriter, String username) {
         if (boardWriter != null && !boardWriter.equals(username)) {
             throw new TokenSubjectMismatchException("요청한 사용자와 게시글 작성자가 일치하지 않습니다.");
+        }
+    }
+    
+    private Board getBoardOrThrow(Long boardNo) {
+        Board board = mapper.findById(boardNo);
+        if (board == null) {
+            throw new ResourceNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+        return board;
+    }
+    
+    private void deleteExistingFile(String fileUrl) {
+        if (fileUrl != null) {
+            s3Service.delete(fileUrl);
         }
     }
 
@@ -95,18 +104,13 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
     public Board updateBoard(Board board, MultipartFile file) {
-        Board existingBoard = mapper.findById(board.getBoardNo());
-        if (existingBoard == null) {
-            throw new ResourceNotFoundException("게시글을 찾을 수 없습니다.");
-        }
+        Board existingBoard = getBoardOrThrow(board.getBoardNo());
 
         existingBoard.setBoardTitle(board.getBoardTitle());
         existingBoard.setBoardContent(board.getBoardContent());
 
         if (file != null && !file.isEmpty()) {
-        	if(existingBoard.getFileUrl() != null) {
-        		deleteFile(existingBoard.getFileUrl());
-        	}
+    		deleteExistingFile(existingBoard.getFileUrl());
             String fileUrl = upfile(file);
             existingBoard.setFileUrl(fileUrl);
         }
@@ -117,19 +121,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public void deleteById(Long boardNo) {
-        Board existingBoard = mapper.findById(boardNo);
-        if (existingBoard == null) {
-            throw new ResourceNotFoundException("게시글을 찾을 수 없습니다.");
-        }
+        Board existingBoard = getBoardOrThrow(boardNo);
         CustomUserDetails user = getAuthenticatedUser();
-        if(!(user.getUsername().equals(existingBoard.getBoardWriter()))) {
-        	throw new CustomAuthenticationException("유효하지 않은 사용자 정보입니다.");
-        }
+        validateBoardWriter(user.getUsername(), existingBoard.getBoardWriter());
         
         mapper.deleteById(boardNo);
-        if(existingBoard.getFileUrl() != null) {
-        	deleteFile(existingBoard.getFileUrl());
-        }
+    	deleteExistingFile(existingBoard.getFileUrl());
 	}
 
 }
