@@ -2,6 +2,7 @@ package com.kh.bclass.board.model.service;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -66,8 +67,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<Board> findAll() {
-		return mapper.findAll();
+	public List<Board> findAll(int page) {
+		int size = 3;
+		RowBounds rowBounds = new RowBounds(page * size, size);
+		return mapper.findAll(rowBounds);
 	}
 
 	@Override

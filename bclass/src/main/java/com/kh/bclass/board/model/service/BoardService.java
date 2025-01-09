@@ -10,7 +10,7 @@ public interface BoardService {
 	
 	void save(Board board, MultipartFile file);
 	
-	List<Board> findAll();
+	List<Board> findAll(int page);
 	
 	Board findById(Long boardNo);
 

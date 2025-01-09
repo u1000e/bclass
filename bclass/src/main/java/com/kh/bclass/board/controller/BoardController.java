@@ -38,8 +38,8 @@ public class BoardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Board>> findAll(){
-		return ResponseEntity.ok(service.findAll());
+	public ResponseEntity<List<Board>> findAll(@RequestParam(name="page", defaultValue = "0") int page){
+		return ResponseEntity.ok(service.findAll(page));
 	}
 	
 	@GetMapping("/{id}")
