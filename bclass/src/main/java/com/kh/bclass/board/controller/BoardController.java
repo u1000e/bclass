@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,11 +22,13 @@ import com.kh.bclass.board.model.vo.Board;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("boards")
 @RequiredArgsConstructor
 @RestController
 @Validated
+@Slf4j
 public class BoardController {
 	
 	private final BoardService service;
@@ -46,6 +48,18 @@ public class BoardController {
 	public ResponseEntity<Board> findById(@PathVariable(name="id") 
 										  @Min(value = 1, message = "게시글번호는 최소 1 이상이어야 합니다.") Long boardNo){
 		return ResponseEntity.ok(service.findById(boardNo));
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@PathVariable(name="id") 
+										  @Min(value = 1, message = "게시글번호는 최소 1 이상이어야 합니다.") Long boardNo,
+										  @ModelAttribute @Valid Board board,
+										  @RequestParam(name="file", required = false) MultipartFile file){
+		board.setBoardNo(boardNo);
+		
+		Board updated = service.updateBoard(board, file);
+		log.info("{}", board);
+		return ResponseEntity.ok(updated);
 	}
 	
 	@PostMapping("/file")

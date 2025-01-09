@@ -48,5 +48,16 @@
 		WHERE
 		      BOARD_NO = #{boardNo}
 	</select>
+	
+	<update id="updateBoard" parameterType="com.kh.bclass.board.model.vo.Board">
+		UPDATE
+		       TB_BOARD
+		   SET
+		       BOARD_TITLE = #{boardTitle}
+		     , BOARD_CONTENT = #{boardContent}
+		     , BOARD_FILE_URL = #{fileUrl}
+		 WHERE
+		       BOARD_NO = #{boardNo}    
+	</update>
     
 </mapper>

@@ -11,10 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.bclass.board.model.dao.BoardMapper;
 import com.kh.bclass.board.model.vo.Board;
 import com.kh.bclass.exception.CustomAuthenticationException;
+import com.kh.bclass.exception.ResourceNotFoundException;
 import com.kh.bclass.exception.TokenSubjectMismatchException;
 import com.kh.bclass.member.model.vo.CustomUserDetails;
 import com.kh.bclass.storage.model.service.StorageService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -91,5 +93,27 @@ public class BoardServiceImpl implements BoardService {
 	public void deleteFile(String fileUri) {
 		s3Service.delete(fileUri);
 	}
+
+	@Override
+    public Board updateBoard(Board board, MultipartFile file) {
+        Board existingBoard = mapper.findById(board.getBoardNo());
+        if (existingBoard == null) {
+            throw new ResourceNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        existingBoard.setBoardTitle(board.getBoardTitle());
+        existingBoard.setBoardContent(board.getBoardContent());
+
+        if (file != null && !file.isEmpty()) {
+        	if(existingBoard.getFileUrl() != null) {
+        		deleteFile(existingBoard.getFileUrl());
+        	}
+            String fileUrl = upfile(file);
+            existingBoard.setFileUrl(fileUrl);
+        }
+
+        mapper.updateBoard(existingBoard);
+        return existingBoard;
+    }
 
 }

@@ -16,4 +16,6 @@ public interface BoardMapper {
 
 	Board findById(Long boardNo);
 
+	void updateBoard(Board existingBoard);
+
 }

@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.bclass.board.model.vo.Board;
 
+import jakarta.validation.Valid;
+
 public interface BoardService {
 	
 	void save(Board board, MultipartFile file);
@@ -17,6 +19,8 @@ public interface BoardService {
 	String upfile(MultipartFile file);
 
 	void deleteFile(String fileUri);
+
+	Board updateBoard(@Valid Board board, MultipartFile file);
 	
 
 }
