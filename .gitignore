@@ -121,3 +121,4 @@ Desktop.ini
 
 # Spring Boot specific
 /logs/
+/Lambda/**

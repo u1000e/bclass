@@ -19,8 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-@Component
 @Slf4j
+@Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -29,18 +29,14 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, StreamWriteException, DatabindException, java.io.IOException {
-        log.error("Authentication error: {}", authException.getMessage());
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", new Date());
-        body.put("type", "about:blank");
-        body.put("title", "Unauthorized");
-        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("detail", authException.getMessage());
-        body.put("instance", request.getRequestURI());
+        body.put("message", "Unauthorized access");
+        body.put("details", authException.getMessage());
+        body.put("path", request.getRequestURI());
 
         objectMapper.writeValue(response.getOutputStream(), body);
     }

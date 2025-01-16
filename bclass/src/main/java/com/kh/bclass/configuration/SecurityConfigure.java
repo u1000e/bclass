@@ -34,9 +34,10 @@ public class SecurityConfigure {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
+ 
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP베이직안씀
+                .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)	   // csrf 필요없어
                 .cors(Customizer.withDefaults())	  // cors react서버로 받기
                 .authorizeHttpRequests(requests -> {
@@ -48,6 +49,9 @@ public class SecurityConfigure {
                     requests.requestMatchers(HttpMethod.GET, "/boards/**").permitAll();
                     requests.requestMatchers(HttpMethod.POST, "/boards").hasRole("USER"); // ROLE_USER 권한 있는 애들만 boards(POST)요청가능
                     // requests.requestMatchers(HttpMethod.POST, "/api/**").authenticated(); 
+                    requests.requestMatchers(HttpMethod.GET, "/comments/**").permitAll();
+                    requests.requestMatchers(HttpMethod.POST, "/comments").authenticated();
+
                 })
                 .exceptionHandling(exception ->
                 		exception.authenticationEntryPoint(customAuthenticationEntryPoint))
@@ -76,6 +80,7 @@ public class SecurityConfigure {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+ 
     
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -5,11 +5,14 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.bclass.board.model.vo.Board;
+import com.kh.bclass.member.model.vo.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
 public interface BoardService {
+	
+	CustomUserDetails getAuthenticatedUser();
 	
 	void save(Board board, MultipartFile file);
 	

@@ -85,11 +85,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public Board findById(Long boardNo) {
-		Board board = mapper.findById(boardNo);
-		if(board == null) {
-			throw new RuntimeException("존재하지 않는 게시글");
-		}
-		return board;
+		return getBoardOrThrow(boardNo);
 	}
 
 	@Override
