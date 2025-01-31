@@ -26,6 +26,7 @@ public class BoardServiceImpl implements BoardService {
 	
 	private final BoardMapper mapper;
 	private final StorageService s3Service;
+	private final FileService fileService;
 	
     public CustomUserDetails getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -65,7 +66,11 @@ public class BoardServiceImpl implements BoardService {
         validateBoardWriter(board.getBoardWriter(), user.getUsername());
         
         if (file != null && !file.isEmpty()) {
-            String fileUrl = s3Service.upload(file);
+            // String fileUrl = s3Service.upload(file);
+        	// 버전 1) Amazon S3 버킷에 올리기 
+        	String fileUrl = fileService.storeFile(file);
+        	// 버전2 ) 로컬 uploads 폴더에 올리기 
+        	log.info(fileUrl);
             board.setFileUrl(fileUrl);
         } else {
         	board.setFileUrl(null);

@@ -41,7 +41,7 @@ public class SecurityConfigure {
                 .csrf(AbstractHttpConfigurer::disable)	   // csrf 필요없어
                 .cors(Customizer.withDefaults())	  // cors react서버로 받기
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/member/login", "/member/join", "/member/refresh", "/member/logout", "/boards/file", "/boards/delete-file").permitAll();
+                    requests.requestMatchers("/member/login", "/uploads/**", "/member/join", "/member/refresh", "/member/logout", "/boards/file", "/boards/delete-file").permitAll();
                     requests.requestMatchers(HttpMethod.PUT, "/member").authenticated();
                     requests.requestMatchers(HttpMethod.PUT, "/boards/**").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/member").authenticated();
